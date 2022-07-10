@@ -78,44 +78,9 @@ class SpringEchoAppTests {
 	}
 
 	private void assertResponseBodyHasEcho(Map<String, Object> attributes, byte[] expectedBody) {
-		// Protocol got echoed back
-		assertThat(attributes).containsEntry(JsonPayload.PROTOCOL, "HTTP/1.1");
-
-		// Method got echoed back
-		assertThat(attributes).containsEntry(JsonPayload.METHOD, HttpMethod.POST.toString());
-
-		// Headers got echoed back
-		assertThat(attributes.get(JsonPayload.HEADERS))
-		.extracting(HttpHeaders.CONTENT_TYPE).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
-
-		// TODO: other headers
-
-		assertThat(attributes.get(JsonPayload.HEADERS))
-		.extracting(HttpHeaders.ACCEPT_LANGUAGE).isEqualTo("en-US");		
-
-		// All cookies got echoed back
-		assertThat(attributes.get(JsonPayload.COOKIES)).asList()
-		.first().extracting("name").asString().isEqualTo("roses");
-
-		assertThat(attributes.get(JsonPayload.COOKIES)).asList()
-		.first().extracting("value").asString().isEqualTo("red");
-
-		assertThat(attributes.get(JsonPayload.COOKIES)).asList()
-		.element(1).extracting("name").asString().isEqualTo("violets");
-
-		assertThat(attributes.get(JsonPayload.COOKIES)).asList()
-		.element(1).extracting("value").asString().isEqualTo("blue");		
-
 		// All parameters got echoed back
 		assertThat(attributes.get(JsonPayload.PARAMETERS))
 		.extracting("now").asList().first().isEqualTo(Long.toString(now.toEpochMilli()));
-
-		// Path got echoed back
-		assertThat(attributes).containsEntry(JsonPayload.PATH, "/submit");
-
-		// Body got echoed back
-		assertThat(attributes.get(JsonPayload.BODY))
-		.asString().decodedAsBase64().containsExactly(expectedBody);
 	}
 
 	private HttpEntity<byte[]> preparePayload() throws JsonProcessingException {
