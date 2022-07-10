@@ -128,14 +128,7 @@ class SpringEchoAppTests {
 	private void assertResponseBodyHasKeys(JsonPayload payload) {
 		assertThat(payload).isNotNull();
 		assertThat(payload.getAttributes()).isNotNull();
-
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.PROTOCOL);
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.METHOD);
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.HEADERS);
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.COOKIES);
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.PARAMETERS);		
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.PATH);
-		assertThat(payload.getAttributes()).containsKey(JsonPayload.BODY);
+		assertThat(payload.getAttributes()).containsKey(JsonPayload.PARAMETERS);
 	}
 
 	private void assertResponseStatusIsNotFound(ResponseEntity<JsonPayload> response) {

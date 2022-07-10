@@ -26,20 +26,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class JsonPayload {
 	
-	public static final String PROTOCOL = "protocol";
-
-	public static final String METHOD = "method";
-	
-	public static final String HEADERS = "headers";
-	
-	public static final String COOKIES = "cookies";
-	
 	public static final String PARAMETERS = "parameters";
 	
-	public static final String PATH = "path";
-	
-	public static final String BODY = "body";
-
 	private final Map<String, Object> attributes = new HashMap<>();
 
 	@JsonAnySetter

@@ -53,13 +53,7 @@ public class EchoController {
 			.collect(Collectors.toMap(Function.identity(), request::getHeader));
 
 		final JsonPayload response = new JsonPayload();
-		response.set(JsonPayload.PROTOCOL, request.getProtocol());
-		response.set(JsonPayload.METHOD, request.getMethod());
-		response.set(JsonPayload.HEADERS, headers);
-		response.set(JsonPayload.COOKIES, request.getCookies());
 		response.set(JsonPayload.PARAMETERS, request.getParameterMap());
-		response.set(JsonPayload.PATH, request.getServletPath());
-		response.set(JsonPayload.BODY, rawBody != null ? Base64.getEncoder().encodeToString(rawBody) : null);
 		LOG.info("REQUEST: {}", request.getParameterMap());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
