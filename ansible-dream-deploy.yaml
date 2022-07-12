@@ -33,5 +33,5 @@
                 ports:
                 - containerPort: 8080
                   protocol: TCP
-                imagePullSecrets:
-                - name: dockercred
+              imagePullSecrets:
+              - name: dockercred
