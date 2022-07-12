@@ -5,8 +5,6 @@ podTemplate(yaml: '''
       containers:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:debug
-        args: ["--context=git://github.com/ademyyazar/spring-echo-example.git",
-                "--destination=ademyyazar/dream-app:latest"]
         volumeMounts:
           - name: kaniko-secret
             mountPath: /kaniko/.docker
@@ -25,7 +23,7 @@ podTemplate(yaml: '''
       container('kaniko') {
         stage('Build') {
           sh '''
-          echo "Building..."
+            /kaniko/executor --context=git://github.com/ademyyazar/spring-echo-example.git --destination=ademyyazar/dream-app:latest
           '''
         }
       }
