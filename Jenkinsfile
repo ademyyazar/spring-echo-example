@@ -1,35 +1,35 @@
-#!/usr/bin/env groovy
-node {
-    checkout scm
-}
-
-pipeline {
-    agent any
-
-    environment {
-        imageId = 'ademyyazar/dream-app:1.$BUILD_NUMBER'
-        docker_creds = credentials('dockerhub')
+podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:debug
+        volumeMounts:
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
+      restartPolicy: Never
+      volumes:
+      - name: kaniko-secret
+        secret:
+            secretName: dockercred
+            items:
+            - key: .dockerconfigjson
+              path: config.json
+''') {
+  node(POD_LABEL) {
+    stage('Checkout') {
+      git url: 'https://github.com/ademyyazar/spring-echo-example.git', branch: 'master'
     }
-    stages {
+
+    stage('Build Image') {
+      container('kaniko') {
         stage('Build') {
-            steps {
-                sh "docker build --no-cache -t $imageId ."
-            }
+          sh '''
+            /kaniko/executor --context `pwd` --destination ademyyazar/dream-app:latest
+          '''
         }
-        stage('Test') {
-            steps {
-                echo 'Testing...'
-            }
-        }
-        stage('Push') {
-            steps {
-                sh'''
-                    docker login --username $docker_creds_USR --password $docker_creds_PSW
-                    docker push $imageId
-                    docker logout
-                    docker rmi $imageId
-                ''' 
-            }
-        }
+      }
     }
+  }
 }
