@@ -1,0 +1,34 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        kind: Pod
+        spec:
+          containers:
+          - name: ansible
+            image: willhallonline/ansible:latest
+            imagePullPolicy: Always
+            command:
+            - sleep
+            args:
+            - 99d
+'''
+    }
+  }
+  stages {
+    stage('Git checkout') {
+      steps {
+        container('ansible') {
+          git 'https://github.com/ademyyazar/spring-echo-example.git'
+        }
+      }
+    }
+    stage('Deploy with Ansible') {
+      steps {
+        container('ansible') {
+          sh 'ansible-playbook -i inventory ansible-dream-deploy.yaml'
+        }
+      }
+    }
+  }
+}
