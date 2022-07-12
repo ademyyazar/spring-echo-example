@@ -1,0 +1,39 @@
+pipeline {
+  agent {
+    kubernetes {
+      defaultContainer 'ansible'
+      yaml '''
+        kind: Pod
+        spec:
+          containers:
+          - name: ansible
+            image: willhallonline/ansible:latest
+            imagePullPolicy: Always
+            command:
+            - sleep
+            args:
+            - 99d
+            volumeMounts:
+              - name: jenkins-docker-cfg
+                mountPath: /ansible/.docker
+          volumes:
+          - name: jenkins-docker-cfg
+            projected:
+              sources:
+              - secret:
+                  name: dockercred
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
+'''
+    }
+  }
+  stages {
+    stage('Deploy with Ansible') {
+      steps {
+        git 'https://github.com/ademyyazar/spring-echo-example.git'
+        sh 'ansible-playbook -u ansible-dream-deploy.yaml'
+      }
+    }
+  }
+}
