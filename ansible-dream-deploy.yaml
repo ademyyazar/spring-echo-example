@@ -1,4 +1,4 @@
-- hosts: 10.50.0.10
+- hosts: kubernetes
   tasks:
   - name: Deploy dream-app
     kubernetes.core.k8s:
