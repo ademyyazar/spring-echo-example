@@ -23,7 +23,7 @@ podTemplate(yaml: '''
       container('kaniko') {
         stage('Build') {
           sh '''
-            /kaniko/executor --context=git://github.com/ademyyazar/spring-echo-example.git --destination=ademyyazar/dream-app:latest
+            '/kaniko/executor --context=git://github.com/ademyyazar/spring-echo-example.git --destination=ademyyazar/dream-app:latest'
           '''
         }
       }
