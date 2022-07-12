@@ -1,31 +1,38 @@
-podTemplate(yaml: '''
-    apiVersion: v1
-    kind: Pod
-    spec:
-      containers:
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        volumeMounts:
-          - name: kaniko-secret
-            mountPath: /kaniko/.docker
-      restartPolicy: Never
-      volumes:
-        - name: kaniko-secret
-          secret:
-            secretName: dockercred
-            items:
-              - key: .dockerconfigjson
-                path: config.json
-''') {
-  node(POD_LABEL) {
-
-    stage('Build Image') {
-      container('kaniko') {
-        stage('Build') {
-          sh '''
-            '/kaniko/executor --context=git://github.com/ademyyazar/spring-echo-example.git --destination=ademyyazar/dream-app:latest'
-          '''
-        }
+pipeline {
+  agent {
+    kubernetes {
+      defaultContainer 'kaniko'
+      yaml '''
+        kind: Pod
+        spec:
+          containers:
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:debug
+            imagePullPolicy: Always
+            command:
+            - sleep
+            args:
+            - 99d
+            volumeMounts:
+              - name: jenkins-docker-cfg
+                mountPath: /kaniko/.docker
+          volumes:
+          - name: jenkins-docker-cfg
+            projected:
+              sources:
+              - secret:
+                  name: dockercred
+                  items:
+                    - key: .dockerconfigjson
+                      path: config.json
+'''
+    }
+  }
+  stages {
+    stage('Build with Kaniko') {
+      steps {
+        git 'https://github.com/ademyyazar/spring-echo-example.git'
+        sh '/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=ademyyazar/dream-app:latest'
       }
     }
   }
