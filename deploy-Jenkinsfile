@@ -32,7 +32,7 @@ pipeline {
     stage('Deploy with Ansible') {
       steps {
         git 'https://github.com/ademyyazar/spring-echo-example.git'
-        sh 'ansible-playbook -u ansible-dream-deploy.yaml'
+        sh 'ansible-playbook ansible-dream-deploy.yaml'
       }
     }
   }
