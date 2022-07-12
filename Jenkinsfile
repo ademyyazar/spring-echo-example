@@ -18,15 +18,15 @@ podTemplate(yaml: '''
               path: config.json
 ''') {
   node(POD_LABEL) {
-    stage('Checkout') {
-      git url: 'https://github.com/ademyyazar/spring-echo-example.git', branch: 'master'
-    }
+    // stage('Checkout') {
+    //   git url: 'https://github.com/ademyyazar/spring-echo-example.git', branch: 'master'
+    // }
 
     stage('Build Image') {
       container('kaniko') {
         stage('Build') {
           sh '''
-            /kaniko/executor --context `pwd` --destination ademyyazar/dream-app:latest
+            /kaniko/executor --context git://github.com/ademyyazar/spring-echo-example.git --destination ademyyazar/dream-app:latest
           '''
         }
       }
